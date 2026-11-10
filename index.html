@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>One Ring Dice</title>
+  <meta name="description" content="Feat and Success dice for The One Ring, Second Edition, posted to your Discord.">
+  <meta name="theme-color" content="#f6efdc">
+  <link rel="icon" href="img/gandalf-rune.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Metamorphous&display=swap">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page">
+    <div class="band" aria-hidden="true"></div>
+
+    <header class="masthead">
+      <h1 class="wordmark">The One Ring</h1>
+      <p class="hero-line" id="hero-line"></p>
+      <nav class="tabs" role="tablist" aria-label="Sections">
+        <button class="tab" role="tab" id="tab-dice" aria-controls="panel-dice" data-tab="dice">Dice</button>
+        <button class="tab" role="tab" id="tab-settings" aria-controls="panel-settings" data-tab="settings">Settings</button>
+      </nav>
+    </header>
+
+    <main>
+      <!-- DICE -->
+      <section class="panel" id="panel-dice" role="tabpanel" aria-labelledby="tab-dice">
+        <div class="pool">
+          <h2 class="label" id="pool-label">Success Dice</h2>
+          <div class="pool-picker" id="pool-picker" role="group" aria-labelledby="pool-label"></div>
+          <p class="pool-note" id="pool-note" aria-live="polite"></p>
+        </div>
+
+        <div class="rolls" id="rolls">
+          <button class="roll" data-attr="strength"><span class="roll-name">Strength</span><span class="roll-tn" data-tn="strength"></span></button>
+          <button class="roll" data-attr="heart"><span class="roll-name">Heart</span><span class="roll-tn" data-tn="heart"></span></button>
+          <button class="roll" data-attr="wits"><span class="roll-name">Wits</span><span class="roll-tn" data-tn="wits"></span></button>
+          <button class="roll" data-attr="custom"><span class="roll-name">Custom</span><span class="roll-tn">TN ?</span></button>
+        </div>
+
+        <div class="tray" id="tray">
+          <div class="tray-dice" id="tray-dice">
+            <p class="tray-empty">The dice wait upon your choosing.</p>
+          </div>
+          <div class="verdict" id="verdict" aria-live="polite" hidden>
+            <p class="verdict-word" id="verdict-word"></p>
+            <p class="verdict-sum" id="verdict-sum"></p>
+          </div>
+          <p class="post-status" id="post-status" aria-live="polite"></p>
+        </div>
+
+        <div class="mods">
+          <div class="segmented" role="radiogroup" aria-label="Feat Die">
+            <button role="radio" data-mode="regular">Regular</button>
+            <button role="radio" data-mode="favored">Favored</button>
+            <button role="radio" data-mode="ill">Ill-Favored</button>
+          </div>
+          <div class="checks">
+            <label class="check"><input type="checkbox" id="miserable"><span class="box" aria-hidden="true"></span><span>Miserable</span></label>
+            <label class="check"><input type="checkbox" id="weary"><span class="box" aria-hidden="true"></span><span>Weary</span></label>
+          </div>
+          <p class="mods-note" id="mods-note"></p>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="panel" id="panel-settings" role="tabpanel" aria-labelledby="tab-settings" hidden>
+        <form class="settings" id="settings" autocomplete="off" novalidate>
+          <p class="settings-lede">Write your hero into the book. Name and all three attributes are needed to roll against them.</p>
+
+          <div class="field">
+            <label for="f-name">Player Name</label>
+            <input id="f-name" name="name" type="text" maxlength="40" placeholder="Bilbo Baggins" spellcheck="false">
+          </div>
+
+          <div class="field">
+            <label for="f-webhook">Discord Link</label>
+            <input id="f-webhook" name="webhook" type="url" inputmode="url" placeholder="https://discord.com/api/webhooks/…" spellcheck="false">
+            <p class="hint" id="webhook-hint">A channel webhook: Server Settings → Integrations → Webhooks → Copy Webhook URL. It stays in this browser.</p>
+          </div>
+
+          <fieldset class="attrs">
+            <legend>Attributes</legend>
+            <div class="field attr">
+              <label for="f-strength">Strength</label>
+              <input id="f-strength" name="strength" type="number" inputmode="numeric" min="1" max="12" step="1">
+              <span class="attr-tn" data-tn="strength"></span>
+            </div>
+            <div class="field attr">
+              <label for="f-heart">Heart</label>
+              <input id="f-heart" name="heart" type="number" inputmode="numeric" min="1" max="12" step="1">
+              <span class="attr-tn" data-tn="heart"></span>
+            </div>
+            <div class="field attr">
+              <label for="f-wits">Wits</label>
+              <input id="f-wits" name="wits" type="number" inputmode="numeric" min="1" max="12" step="1">
+              <span class="attr-tn" data-tn="wits"></span>
+            </div>
+          </fieldset>
+          <p class="hint">Each Target Number is 20 minus the attribute.</p>
+
+          <button type="button" class="go" id="to-dice">To the dice</button>
+        </form>
+      </section>
+    </main>
+
+    <div class="band" aria-hidden="true"></div>
+  </div>
+
+  <dialog class="modal" id="custom-dialog" aria-labelledby="custom-title">
+    <form method="dialog" class="modal-body" id="custom-form">
+      <h2 class="modal-title" id="custom-title">Set the Target</h2>
+      <label class="field">
+        <span>Target Number</span>
+        <input id="custom-tn" type="number" inputmode="numeric" min="1" max="40" step="1" required>
+      </label>
+      <div class="modal-actions">
+        <button type="button" class="ghost" id="custom-cancel">Cancel</button>
+        <button type="submit" class="go" value="roll">Roll</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="config.js"></script>
+  <script src="dice.js"></script>
+  <script src="discord.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

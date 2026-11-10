@@ -1,0 +1,5 @@
+# The rulebook is for local reference only; never publish it.
+*.pdf
+*~lock~
+.DS_Store
+Thumbs.db
