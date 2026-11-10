@@ -258,8 +258,7 @@
     word.textContent = D.DEGREE_TEXT[r.degree];
     word.dataset.degree = r.degree;
     const feat = r.feat === D.RUNE ? "the Gandalf rune" : r.feat === D.EYE ? "the Eye" : null;
-    const why = r.reason === "rune" ? " · the rune prevails" : r.reason === "miserable" ? " · the Eye finds you Miserable" : "";
-    $("#verdict-sum").textContent = `${label ? `${label} · ` : ""}rolled ${r.total} against TN ${r.tn}${feat && !why ? ` · ${feat}` : ""}${why}`;
+    $("#verdict-sum").textContent = `${label ? `${label} · ` : ""}rolled ${r.total} against TN ${r.tn}${feat ? ` · ${feat}` : ""}`;
     $("#verdict").hidden = false;
     post(r, label);
   }

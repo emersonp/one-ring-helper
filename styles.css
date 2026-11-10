@@ -204,12 +204,6 @@ button:disabled { cursor: not-allowed; }
   align-items: center;
   gap: var(--space-sm);
 }
-.tray-empty {
-  margin: 0;
-  color: var(--color-tray-ink-soft);
-  font-size: var(--text-sm);
-  text-align: center;
-}
 .feat-row, .success-row {
   display: flex;
   flex-wrap: wrap;
