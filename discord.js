@@ -32,17 +32,23 @@
     return `${dice}  =  **${roll.total}**`;
   }
 
+  // How the roll was made: "while Weary", "with Favor", "while Miserable and with Favor",
+  // "while Weary and Miserable, with Ill-Favor". Empty for a plain roll.
+  function circumstances(roll) {
+    const states = [roll.weary && "Weary", roll.miserable && "Miserable"].filter(Boolean);
+    const favor = { favored: "with Favor", ill: "with Ill-Favor" }[roll.mode];
+    const whileText = states.length ? `while ${states.join(" and ")}` : "";
+    if (!favor) return whileText;
+    if (!whileText) return favor;
+    return `${whileText}${states.length > 1 ? "," : " and"} ${favor}`;
+  }
+
   function lines(roll, { player, label }) {
-    const flags = [
-      roll.mode === "favored" && "Favored",
-      roll.mode === "ill" && "Ill-Favored",
-      roll.weary && "Weary",
-      roll.miserable && "Miserable",
-    ].filter(Boolean);
+    const how = circumstances(roll);
+    const what = label ? `${plain(label)} (TN ${roll.tn})` : `against TN ${roll.tn}`;
     return {
-      intro: `${plain(player) || "Someone"} rolled ${label ? `${plain(label)} (TN ${roll.tn})` : `against TN ${roll.tn}`} and got a`,
+      intro: `${plain(player) || "Someone"} rolled ${what}${how ? ` ${how}` : ""} and got a`,
       result: DEGREE_TEXT[roll.degree],
-      detail: flags.length ? `${flags.join(" · ")}` : "",
     };
   }
 
@@ -56,7 +62,6 @@
         accent_color: COLORS[roll.degree],
         components: [
           { type: 10, content: `-# ${l.intro}\n## ${l.result}\n${diceLine(roll, emoji)}` },
-          ...(l.detail ? [{ type: 10, content: `-# ${l.detail}` }] : []),
         ],
       }],
     };

@@ -20,8 +20,18 @@ test("custom emoji replace the runes; dropped and weary dice are struck", () => 
   const line = DC.diceLine(r, { eye: "<:e:1>", gandalf: "<:g:2>", elf: "<:t:3>" });
   assert.equal(line, "~~<:e:1>~~ <:g:2>  +  ~~2~~  =  **0**");
   const msg = DC.buildMessage(r, { player: "Sam", label: null });
-  assert.match(msg.components[0].components[0].content, /^-# Sam rolled against TN 20 and got a\n## SUCCESS!/);
-  assert.equal(msg.components[0].components[1].content, "-# Favored · Weary");
+  assert.match(msg.components[0].components[0].content, /^-# Sam rolled against TN 20 while Weary and with Favor and got a\n## SUCCESS!/);
+  assert.equal(msg.components[0].components.length, 1); // no footer line
+});
+
+test("the intro says how the roll was made", () => {
+  const intro = (opts) => DC.lines(D.roll({ tn: 15, ...opts }, seq(FEAT(5), FEAT(5))), { player: "Narniel", label: "Wits" }).intro;
+  assert.equal(intro({}), "Narniel rolled Wits (TN 15) and got a");
+  assert.equal(intro({ mode: "favored" }), "Narniel rolled Wits (TN 15) with Favor and got a");
+  assert.equal(intro({ mode: "ill" }), "Narniel rolled Wits (TN 15) with Ill-Favor and got a");
+  assert.equal(intro({ weary: true }), "Narniel rolled Wits (TN 15) while Weary and got a");
+  assert.equal(intro({ miserable: true, mode: "favored" }), "Narniel rolled Wits (TN 15) while Miserable and with Favor and got a");
+  assert.equal(intro({ weary: true, miserable: true, mode: "ill" }), "Narniel rolled Wits (TN 15) while Weary and Miserable, with Ill-Favor and got a");
 });
 
 test("recognises webhook links", () => {
