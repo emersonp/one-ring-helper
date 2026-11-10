@@ -33,14 +33,14 @@
   }
 
   // How the roll was made: "while Weary", "with Favor", "while Miserable and with Favor",
-  // "while Weary and Miserable, with Ill-Favor". Empty for a plain roll.
+  // "while Weary, Miserable, and with Ill-Favor". Empty for a plain roll.
   function circumstances(roll) {
-    const states = [roll.weary && "Weary", roll.miserable && "Miserable"].filter(Boolean);
+    const items = [roll.weary && "Weary", roll.miserable && "Miserable"].filter(Boolean);
+    if (items.length) items[0] = `while ${items[0]}`;
     const favor = { favored: "with Favor", ill: "with Ill-Favor" }[roll.mode];
-    const whileText = states.length ? `while ${states.join(" and ")}` : "";
-    if (!favor) return whileText;
-    if (!whileText) return favor;
-    return `${whileText}${states.length > 1 ? "," : " and"} ${favor}`;
+    if (favor) items.push(favor);
+    if (items.length < 3) return items.join(" and ");
+    return `${items.slice(0, -1).join(", ")}, and ${items.at(-1)}`;
   }
 
   function lines(roll, { player, label }) {

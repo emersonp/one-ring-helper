@@ -31,7 +31,8 @@ test("the intro says how the roll was made", () => {
   assert.equal(intro({ mode: "ill" }), "Narniel rolled Wits (TN 15) with Ill-Favor and got a");
   assert.equal(intro({ weary: true }), "Narniel rolled Wits (TN 15) while Weary and got a");
   assert.equal(intro({ miserable: true, mode: "favored" }), "Narniel rolled Wits (TN 15) while Miserable and with Favor and got a");
-  assert.equal(intro({ weary: true, miserable: true, mode: "ill" }), "Narniel rolled Wits (TN 15) while Weary and Miserable, with Ill-Favor and got a");
+  assert.equal(intro({ weary: true, miserable: true, mode: "ill" }), "Narniel rolled Wits (TN 15) while Weary, Miserable, and with Ill-Favor and got a");
+  assert.equal(intro({ weary: true, miserable: true }), "Narniel rolled Wits (TN 15) while Weary and Miserable and got a");
 });
 
 test("recognises webhook links", () => {
