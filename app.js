@@ -165,9 +165,8 @@
     const bad = hook && !DC.isWebhookUrl(hook);
     hint.classList.toggle("bad", Boolean(bad));
     form.elements.webhook.setAttribute("aria-invalid", bad ? "true" : "false");
-    hint.textContent = bad
-      ? "That isn’t a Discord webhook link. It should start https://discord.com/api/webhooks/"
-      : "A channel webhook: Server Settings → Integrations → Webhooks → Copy Webhook URL. It stays in this browser.";
+    hint.hidden = !bad;
+    hint.textContent = bad ? "That isn’t a Discord webhook link. It should start https://discord.com/api/webhooks/" : "";
     $("#to-dice").disabled = !ready();
   }
   form.addEventListener("input", (e) => {
