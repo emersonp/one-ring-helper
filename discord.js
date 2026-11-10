@@ -47,7 +47,7 @@
     const how = circumstances(roll);
     const what = label ? `${plain(label)} (TN ${roll.tn})` : `against TN ${roll.tn}`;
     return {
-      intro: `${plain(player) || "Someone"} rolled ${what}${how ? ` ${how}` : ""} and got a`,
+      intro: `**${plain(player) || "Someone"}** rolled ${what}${how ? ` ${how}` : ""} and got a`,
       result: DEGREE_TEXT[roll.degree],
     };
   }
