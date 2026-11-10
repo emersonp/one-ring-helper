@@ -12,7 +12,6 @@
     gandalf: emoji.gandalf || FALLBACK.gandalf,
     elf: emoji.elf || FALLBACK.elf,
   });
-  const strike = (s) => `~~${s}~~`;
   // Player names are typed by hand; keep Discord markdown from mangling them.
   const plain = (s) => String(s ?? "").replace(/([\\*_~`|>#])/g, "\\$1");
 
@@ -20,13 +19,15 @@
     return face === "eye" ? r.eye : face === "rune" ? r.gandalf : String(face);
   }
 
-  // The dice line: Feat Die (both, with the dropped one struck) + each Success Die, then the total.
+  // The dice line: the kept Feat Die, then a dropped one in parentheses ("10 (9)"), + each Success Die
+  // (Weary zeros as "1→0"), then the total.
   function diceLine(roll, emoji) {
     const r = runes(emoji);
-    const feats = roll.feats.map((f, i) => (i === roll.kept ? featText(f, r) : strike(featText(f, r)))).join(" ");
+    const dropped = roll.feats.filter((_, i) => i !== roll.kept).map((f) => `(${featText(f, r)})`);
+    const feats = [featText(roll.feat, r), ...dropped].join(" ");
     const success = roll.success.map((d) => {
       const s = d.elf ? `6${r.elf}` : String(d.value);
-      return d.counts === 0 ? strike(s) : s;
+      return d.counts === 0 ? `${s}→0` : s;
     });
     const dice = success.length ? `${feats}  +  ${success.join(" · ")}` : feats;
     return `${dice}  =  **${roll.total}**`;

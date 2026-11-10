@@ -15,10 +15,12 @@ test("three lines: who rolled, the degree in big letters, then the dice", () => 
   assert.deepEqual(msg.allowed_mentions, { parse: [] });
 });
 
-test("custom emoji replace the runes; dropped and weary dice are struck", () => {
+test("custom emoji replace the runes; kept Feat Die first, dropped in parentheses, weary dice →0", () => {
   const r = D.roll({ dice: 1, tn: 20, mode: "favored", weary: true }, seq(FEAT("eye"), FEAT("rune"), 1));
   const line = DC.diceLine(r, { eye: "<:e:1>", gandalf: "<:g:2>", elf: "<:t:3>" });
-  assert.equal(line, "~~<:e:1>~~ <:g:2>  +  ~~2~~  =  **0**");
+  assert.equal(line, "<:g:2> (<:e:1>)  +  2→0  =  **0**");
+  const fav = D.roll({ dice: 4, tn: 15, mode: "favored", weary: true }, seq(FEAT(9), FEAT(10), 5, 0, 1, 3));
+  assert.equal(DC.diceLine(fav), "10 (9)  +  6ᛏ · 1→0 · 2→0 · 4  =  **20**");
   const msg = DC.buildMessage(r, { player: "Sam", label: null });
   assert.match(msg.components[0].components[0].content, /^-# \*\*Sam\*\* rolled against TN 20 while Weary and with Favor and got a\n## SUCCESS!/);
   assert.equal(msg.components[0].components.length, 1); // no footer line
